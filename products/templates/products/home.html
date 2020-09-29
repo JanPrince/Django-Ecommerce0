@@ -65,7 +65,7 @@
               </div>
               <div class="card-footer">
                 <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                <button data-product="{{ product.id }}" class="btn btn-primary ml-4">Add to Cart</button>
+                <button data-product="{{ product.id }}" data-action="add" class="btn btn-primary ml-4">Add to Cart</button>
               </div>
             </div>
           </div>
@@ -80,4 +80,86 @@
     </div>  <!-- /row-->
 </div>      <!-- /container-->
 
-{% endblock content %}
+<script>
+
+  var user = "{{ request.user }}";
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+      // document.querySelector('#item_count').innerHTML = item_count;
+      document.querySelectorAll('button').forEach(function (button) {
+          button.onclick = function () {
+              // UpdateCart();
+              this.innerHTML = "Item Added";
+              this.style.opacity = "0.6";
+              let productId = this.dataset.product;
+              let action = this.dataset.action;
+              
+              console.log(`productId: ${productId}  action: ${action}`);
+
+              console.log(`User: ${user}`);
+
+              if (user == "AnonymousUser"){
+                console.log('Not Logged In');
+              }
+              else{
+                UpdateOrder(productId, action);
+              }
+          }
+      })
+  })
+
+  function UpdateOrder(productId, action){
+    console.log("User is logged in, sending data...");
+
+
+    var url = 'update_cart/';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify({'productId':productId, 'action':action})
+    })
+
+    .then((response) => {
+      return response.json();
+    })
+
+    .then((data) => {
+      console.log('data:', data)
+      document.querySelector('#item_count').innerHTML = data['cart'];
+    })
+
+
+  }
+
+
+  // function UpdateCart() {
+  //     document.querySelector('#item_count').innerHTML = data['cart'];
+  // }
+</script>
+
+{% endblock content %}  

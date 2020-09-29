@@ -19,11 +19,12 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.user.username}"
 
+
 # better name = Order
 class OrderItem(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="orders")
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(auto_created=True)
 
     def __str__(self):
         return f"{self.customer.user.username} : {self.item} - {self.quantity}"

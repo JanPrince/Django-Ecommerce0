@@ -8,7 +8,7 @@
         <title>Ecom</title>
         <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css'%}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="{% static 'js/index.js' %}"></script>
+<!--        <script src="{% static 'js/index.js' %}"></script>-->
     </head>
     <body style="padding-top: 56px;">
 
@@ -31,7 +31,7 @@
           </li>
           <li class="nav-item ml-2">
             <a class="nav-link" href="cart.html">
-              <i style="font-size: large;" class="fa fa-shopping-cart"><span id="item_count" class=" ml-2"> 0</span></i>
+              <i style="font-size: large;" class="fa fa-shopping-cart"><span id="item_count" class=" ml-2"> {{ cart }}</span></i>
             </a>
           </li>
         </ul>
