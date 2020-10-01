@@ -12,15 +12,22 @@ def index(request):
         'products': Product.objects.all(),
         "cart": cart_num,
     }
-    print(request.user)
     return render(request, 'products/home.html', context)
 
 
+
 def cart(request):
-    context = {}
+    customer = request.user.customer
+    cart_num = len(customer.orders.all())
+    context = {
+        'customer_orders': customer.orders.all(),
+        'cart': cart_num,
+    }
     return render(request, 'products/cart.html', context)
 
 
+
+# views to handle requests from client
 def updateCart(request):
     data = json.loads(request.body)
     productId = data['productId']
@@ -35,6 +42,9 @@ def updateCart(request):
         order = OrderItem.objects.get(customer=customer, item=product)
         if action == 'add':
             order.quantity = order.quantity + 1
+            order.save()
+        elif action == 'remove':
+            order.quantity = order.quantity - 1
             order.save()
 
     except OrderItem.DoesNotExist:
@@ -52,5 +62,7 @@ def updateCart(request):
     cart_ = len(customer.orders.all())
     return JsonResponse({
         'message': 'Item was added',
-        'cart' : cart_
+        'cart' : cart_,
+        'order_quantity': order.quantity,
+        'total_orderItem': order.total_orderItem(),
     })

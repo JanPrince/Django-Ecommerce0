@@ -84,6 +84,8 @@
 
   var user = "{{ request.user }}";
 
+
+  // django - required for csrf (since we're posting)
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -105,6 +107,7 @@
 
 
 
+
   document.addEventListener("DOMContentLoaded", function() {
       // document.querySelector('#item_count').innerHTML = item_count;
       document.querySelectorAll('button').forEach(function (button) {
@@ -120,7 +123,7 @@
               console.log(`User: ${user}`);
 
               if (user == "AnonymousUser"){
-                console.log('Not Logged In');
+                console.log('Not Logged In');   // Don't add to cart if user is not logged in.
               }
               else{
                 UpdateOrder(productId, action);
@@ -129,6 +132,8 @@
       })
   })
 
+
+  // Post data to server
   function UpdateOrder(productId, action){
     console.log("User is logged in, sending data...");
 
@@ -139,27 +144,24 @@
       method: 'POST',
       headers: {
         'Content-Type':'application/json',
-        'X-CSRFToken': csrftoken,
+        'X-CSRFToken': csrftoken, // send token 
       },
-      body: JSON.stringify({'productId':productId, 'action':action})
+      body: JSON.stringify({'productId':productId, 'action':action}) // body of message
     })
 
+    // Response from server
     .then((response) => {
       return response.json();
     })
 
     .then((data) => {
-      console.log('data:', data)
-      document.querySelector('#item_count').innerHTML = data['cart'];
+      console.log('data:', data['message'])
+      document.querySelector('#item_count').innerHTML = data['cart'];   // what to do with data from server
     })
 
 
   }
 
-
-  // function UpdateCart() {
-  //     document.querySelector('#item_count').innerHTML = data['cart'];
-  // }
 </script>
 
 {% endblock content %}  

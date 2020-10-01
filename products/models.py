@@ -28,3 +28,6 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.customer.user.username} : {self.item} - {self.quantity}"
+
+    def total_orderItem(self):
+        return self.item.price * self.quantity
