@@ -2,3 +2,5 @@
 products/static/
 
 media/
+
+*.css
